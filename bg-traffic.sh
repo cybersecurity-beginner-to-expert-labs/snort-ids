@@ -10,7 +10,7 @@ TARGET_PORT=8000
 # Set the interval (in seconds) between each packet
 INTERVAL=10  # Interval between packets in seconds
 
-echo "Starting to send SYN packets from $SOURCE_IP to $TARGET_IP:$TARGET_PORT every $INTERVAL seconds to assist flush buffers."
+echo "Starting to send SYN packets from $SOURCE_IP to $TARGET_IP:$TARGET_PORT every $INTERVAL (s) to assist flushing snort buffers."
 
 # Function to send SYN packets
 send_syn_packets() {
