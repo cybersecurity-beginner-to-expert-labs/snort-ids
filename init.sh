@@ -81,28 +81,28 @@ case $choice in
         # Install Snort
         install_snort
         
-        # Pull and run Nginx container
-        run_nginx_container
-        
         # Get local and Nginx container IPs
         get_ips
+
+        # Clean up (stop and remove all containers except for the one running Nginx)
+        cleanup_containers
+        
+        # Pull and run Nginx container
+        run_nginx_container
         
         # Overwrite the local.rules file with the new rule
         overwrite_rules
         
-        # Run Snort with the new rule
-        run_snort
-        
         # Run the background traffic script
         run_background_traffic
+
+        # Run Snort with the new rule
+        run_snort
         ;;
         
     2)  # Option 2: Reset everything except local.rules (preserve rules)
         # Install Snort
         install_snort
-        
-        # Pull and run Nginx container
-        run_nginx_container
         
         # Get local and Nginx container IPs
         get_ips
@@ -110,13 +110,16 @@ case $choice in
         # Clean up (stop and remove all containers except for the one running Nginx)
         cleanup_containers
         
+        # Pull and run Nginx container
+        run_nginx_container
+
         # Don't overwrite the local.rules file, keeping it intact
-        
-        # Run Snort with the existing rules
-        run_snort
         
         # Run the background traffic script
         run_background_traffic
+
+        # Run Snort with the existing rules
+        run_snort
         ;;
         
     *)  # Invalid choice
