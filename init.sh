@@ -44,8 +44,8 @@ function overwrite_rules() {
     RULES_FILE="/etc/snort/rules/local.rules"
 
     echo "Overwriting $RULES_FILE with new rule..."
-    echo -e "\n# Rule to detect NMAP scan from $LOCAL_IP to Nginx container ($NGINX_CONTAINER_IP)\nalert tcp any any -> $NGINX_CONTAINER_IP 25 (msg:\"NMAP Scan Detected\"; flags:S; sid:1000003;)" > $RULES_FILE
-    echo -e "\n\n# Rule to detect malicious path traversal attempt from $LOCAL_IP to Nginx container ($NGINX_CONTINER_IP)\nalert tcp $LOCAL_IP any -> $NGINX_CONTAINER_IP 80 (msg:\"WEB-ATTACK: Path Traversal Attempt (GET /etc/passwd)\"; flow:established,to_server; http_uri; content:\"/../etc/passwd\"; sid:1000009; rev:1;)" >> $RULES_FILE
+    echo -e "\n# Rule to detect NMAP scan from $SOURCE_IP to Nginx container ($NGINX_CONTAINER_IP)\nalert tcp $SOURCE_IP any -> $NGINX_CONTAINER_IP 25 (msg:\"NMAP Scan Detected\"; flags:S; sid:1000003;)" > $RULES_FILE
+    echo -e "\n\n# Rule to detect malicious path traversal attempt from $SOURCE to Nginx container ($NGINX_CONTINER_IP)\nalert tcp $SOURCE_IP any -> $NGINX_CONTAINER_IP 80 (msg:\"WEB-ATTACK: Path Traversal Attempt (GET /etc/passwd)\"; flow:established,to_server; http_uri; content:\"/../etc/passwd\"; sid:1000009; rev:1;)" >> $RULES_FILE
 }
 
 # Function to run Snort with the given rule
@@ -103,7 +103,7 @@ case $choice in
         
         # Pull and run Nginx container
         run_nginx_container
-        
+
         # Don't overwrite the local.rules file, keeping it intact
         
         # Run the background traffic script
