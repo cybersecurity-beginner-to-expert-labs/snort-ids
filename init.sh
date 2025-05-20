@@ -63,7 +63,7 @@ function run_snort() {
 function run_background_traffic() {
     sudo kill -9 $(pgrep bg-traffic) 2>/dev/null
     sudo chmod +x ./bg-traffic.sh
-    sudo ./background-traffic.sh &
+    sudo ./bg-traffic.sh &
 }
 
 # Function to clean up (stop and remove all containers except for Nginx)
@@ -80,15 +80,15 @@ case $choice in
     1)  # Option 1: Start everything from scratch (overwrite rules)
         # Install Snort
         install_snort
-        
-        # Get local and Nginx container IPs
-        get_ips
 
         # Clean up (stop and remove all containers except for the one running Nginx)
         cleanup_containers
         
         # Pull and run Nginx container
         run_nginx_container
+
+        # Get local and Nginx container IPs
+        get_ips
         
         # Overwrite the local.rules file with the new rule
         overwrite_rules
@@ -104,15 +104,15 @@ case $choice in
         # Install Snort
         install_snort
         
-        # Get local and Nginx container IPs
-        get_ips
-        
         # Clean up (stop and remove all containers except for the one running Nginx)
         cleanup_containers
         
         # Pull and run Nginx container
         run_nginx_container
 
+        # Get local and Nginx container IPs
+        get_ips
+        
         # Don't overwrite the local.rules file, keeping it intact
         
         # Run the background traffic script
