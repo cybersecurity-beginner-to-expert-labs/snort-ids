@@ -33,17 +33,14 @@ function run_nginx_container() {
     sudo docker run -d --name nginx-container nginx
 }
 
-# Function to get IP addresses (local IP and Nginx container IP)
-function get_ips() {
+# Function to overwrite local.rules file with the new rule
+function overwrite_rules() {
     SOURCE_IP=$(sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.Gateway}}{{end}}' nginx-container)
     NGINX_CONTAINER_IP=$(sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx-container)
 
     echo "Local IP address (eth0): $SOURCE_IP"
     echo "Nginx container IP: $NGINX_CONTAINER_IP"
-}
-
-# Function to overwrite local.rules file with the new rule
-function overwrite_rules() {
+    
     RULES_FILE="/etc/snort/rules/local.rules"
 
     echo "Overwriting $RULES_FILE with new rule..."
@@ -86,9 +83,6 @@ case $choice in
         
         # Pull and run Nginx container
         run_nginx_container
-
-        # Get local and Nginx container IPs
-        get_ips
         
         # Overwrite the local.rules file with the new rule
         overwrite_rules
@@ -109,9 +103,6 @@ case $choice in
         
         # Pull and run Nginx container
         run_nginx_container
-
-        # Get local and Nginx container IPs
-        get_ips
         
         # Don't overwrite the local.rules file, keeping it intact
         
