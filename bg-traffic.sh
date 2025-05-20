@@ -17,7 +17,7 @@ send_syn_packets() {
   while true; do
     # Send a SYN packet using bash (without requiring scapy or external tools)
     # Creating a SYN packet with a simple raw TCP packet using netcat or bash
-    sudo nmap -sS -p 1-50 $TARGET_IP
+    sudo nmap -sS -p 5000-5100 $TARGET_IP
     sleep $INTERVAL  # Wait for the specified interval
   done
 }

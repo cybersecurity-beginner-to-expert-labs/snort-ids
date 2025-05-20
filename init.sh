@@ -35,10 +35,10 @@ function run_nginx_container() {
 
 # Function to get IP addresses (local IP and Nginx container IP)
 function get_ips() {
-    LOCAL_IP=$(hostname -I | awk '{print $1}')
+    SOURCE_IP=$(sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.Gateway}}{{end}}' nginx-container)
     NGINX_CONTAINER_IP=$(sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx-container)
 
-    echo "Local IP address (eth0): $LOCAL_IP"
+    echo "Local IP address (eth0): $SOURCEL_IP"
     echo "Nginx container IP: $NGINX_CONTAINER_IP"
 }
 
@@ -47,11 +47,13 @@ function overwrite_rules() {
     RULES_FILE="/etc/snort/rules/local.rules"
 
     echo "Overwriting $RULES_FILE with new rule..."
-    echo -e "\n# Rule to detect NMAP scan from $LOCAL_IP to Nginx container ($NGINX_CONTAINER_IP)\nalert tcp any any -> $NGINX_CONTAINER_IP 80 (msg:\"NMAP Scan Detected\"; flags:S; sid:1000003;)" > $RULES_FILE
+    echo -e "\n# Rule to detect NMAP scan from $LOCAL_IP to Nginx container ($NGINX_CONTAINER_IP)\nalert tcp any any -> $NGINX_CONTAINER_IP 23 (msg:\"NMAP Scan Detected\"; flags:S; sid:1000003;)" > $RULES_FILE
+    echo -e "\n# Rule to detect malicious path traversal attempt from $LOCAL_IP to Nginx container ($NGINX_CONTINER_IP)\nalert tcp $LOCAL_IP any -> $NGINX_CONTAINER_IP 80 (msg:\"WEB-ATTACK: Path Traversal Attempt (GET /etc/passwd)\"; flow:established,to_server; http_uri; content:\"/../etc/passwd\"; sid:1000009; rev:1;)" > $RULES_FILE
 }
 
 # Function to run Snort with the given rule
 function run_snort() {
+    
     sudo kill -9 $(pgrep snort3) 2>/dev/null
     echo "Running Snort with custom rule..."
     sudo snort -R /etc/snort/rules/local.rules -i docker0 -A alert_fast
