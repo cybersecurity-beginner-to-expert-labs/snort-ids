@@ -53,7 +53,7 @@ function run_snort() {
     
     sudo kill -9 $(pgrep snort3) 2>/dev/null
     echo "Running Snort with custom rule..."
-    sudo snort -c /etc/snort/snort.lua -R /etc/snort/rules/local.rules -i docker0 -A alert_fast
+    sudo snort -R /etc/snort/rules/local.rules -i docker0 -A alert_fast
 }
 
 # Function to run background traffic script
