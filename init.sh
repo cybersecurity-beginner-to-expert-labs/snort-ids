@@ -45,7 +45,7 @@ function overwrite_rules() {
 
     echo "Overwriting $RULES_FILE with new rule..."
     echo -e "\n# Rule to detect NMAP scan from $SOURCE_IP to Nginx container ($NGINX_CONTAINER_IP)\nalert tcp $SOURCE_IP any -> $NGINX_CONTAINER_IP 25 (msg:\"NMAP Scan to FTP(25) Port Detected\"; flags:S; sid:1000003;)" > $RULES_FILE
-    echo -e "\n\n# Rule to detect malicious path traversal attempt from $SOURCE to Nginx container ($NGINX_CONTINER_IP)\nalert tcp $SOURCE_IP any -> $NGINX_CONTAINER_IP 80 (msg:\"WEB-ATTACK: Path Traversal Attempt (GET /etc/passwd)\"; flow:established,to_server; http_uri; content:\"/../etc/passwd\"; sid:1000009; rev:1;)" >> $RULES_FILE
+    echo -e "\n\n# Rule to detect malicious path traversal attempt from $SOURCE to Nginx container ($NGINX_CONTINER_IP)\nalert tcp $SOURCE_IP any -> $NGINX_CONTAINER_IP 80 (msg:\"WEB-ATTACK: Path Traversal Attempt (GET /etc/passwd)\"; http_uri; content:\"/../etc/passwd\"; sid:1000009; rev:1;)" >> $RULES_FILE
 }
 
 # Function to run Snort with the given rule
