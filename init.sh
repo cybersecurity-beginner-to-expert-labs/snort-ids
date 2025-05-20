@@ -47,7 +47,7 @@ function overwrite_rules() {
     RULES_FILE="/etc/snort/rules/local.rules"
 
     echo "Overwriting $RULES_FILE with new rule..."
-    echo -e "\n# Rule to detect NMAP scan from $LOCAL_IP to Nginx container ($NGINX_CONTAINER_IP)\nalert tcp any any -> $NGINX_CONTAINER_IP 23 (msg:\"NMAP Scan Detected\"; flags:S; sid:1000003;)" > $RULES_FILE
+    echo -e "\n# Rule to detect NMAP scan from $LOCAL_IP to Nginx container ($NGINX_CONTAINER_IP)\nalert tcp any any -> $NGINX_CONTAINER_IP 25 (msg:\"NMAP Scan Detected\"; flags:S; sid:1000003;)" > $RULES_FILE
     echo -e "\n\n# Rule to detect malicious path traversal attempt from $LOCAL_IP to Nginx container ($NGINX_CONTINER_IP)\nalert tcp $LOCAL_IP any -> $NGINX_CONTAINER_IP 80 (msg:\"WEB-ATTACK: Path Traversal Attempt (GET /etc/passwd)\"; flow:established,to_server; http_uri; content:\"/../etc/passwd\"; sid:1000009; rev:1;)" >> $RULES_FILE
 }
 
@@ -70,7 +70,8 @@ function run_background_traffic() {
 function cleanup_containers() {
     echo "Stopping and removing all Docker containers..."
     sudo docker stop $(sudo docker ps -aq) 2>/dev/null
-    sudo docker rm $(sudo docker ps -aq) 2>/dev/null
+    sleep 1
+    sudo docker rm -f $(sudo docker ps -aq) 2>/dev/null
 }
 
 # Main script logic
