@@ -12,13 +12,34 @@ function display_menu() {
     read choice
 }
 
+# Function to install Prereqs if not already installed
+function install_prereqs() {
+    if ! command -v awk &> /dev/null
+    then
+        echo "Awk not found, installing..."
+        sudo apt-get update
+        sudo apt-get install -y gawk
+    else
+        echo "AWK is already installed."
+    fi
+
+    if ! command -v docker &> /dev/null
+    then
+        echo "Docker not found, installing..."
+        sudo apt-get update
+        sudo apt-get install -y docker.io docker-compose
+    else
+        echo "Docker is already installed."
+    fi
+}
+
 # Function to install Snort if not already installed
 function install_snort() {
     if ! command -v snort &> /dev/null
     then
         echo "Snort not found, installing..."
-        sudo apt update
-        sudo apt install -y snort awk
+        sudo apt-get update
+        sudo apt-get install -y snort gawk
     else
         echo "Snort is already installed."
     fi
@@ -76,6 +97,10 @@ function cleanup_containers() {
 display_menu
 case $choice in
     1)  # Option 1: Start everything from scratch (overwrite rules)
+        
+        # Install prereqs
+        install_prereqs
+
         # Install Snort
         install_snort
 
@@ -96,6 +121,10 @@ case $choice in
         ;;
         
     2)  # Option 2: Reset everything except local.rules (preserve rules)
+        
+        # Install prereqs
+        install_prereqs
+        
         # Install Snort
         install_snort
         
